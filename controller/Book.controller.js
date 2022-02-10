@@ -127,7 +127,7 @@ module.exports.rentedBookByUser = async (req,res) => {
         query,
         {
         bind: { userId: req.params.userId },
-        type: QueryTypes.SELECT
+        type: Sequelize.QueryTypes.SELECT
         }
     ).catch(err => console.log("Err in rentedBookByUser",err))
 
