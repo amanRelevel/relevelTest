@@ -1,4 +1,5 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const userModel = require('../services/db.services').User;
 
 module.exports.auth = (req,res,next) => {
     const authHeader = req.headers.authorization;
@@ -12,7 +13,12 @@ module.exports.auth = (req,res,next) => {
                     msg : "Invalid Token"
                 })
             }
-            req.user.id = user;
+            let data = await userModel.findOne({
+                where:{
+                    id : user
+                }
+            }).catch(err => console.log("Error while fetching user data",err))
+            req.user = data;
             next();
         })
     }
