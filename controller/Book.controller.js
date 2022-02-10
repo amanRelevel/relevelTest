@@ -4,7 +4,16 @@ const userModel = require('../services/db.services').User
 const rentedBookModel = require('../services/db.services').RentedBook
 
 module.exports.fetchAllBook = async (req,res) => {
-    let data = await bookModel.findAll().catch(err => console.log("Error in fetchAllBook",err))
+    let size = 10;
+    let startIndex = (req.query.page-1)*size;
+    
+    let data = await bookModel.findAndCountAll({
+        offset : startIndex,
+        limit : size,
+        order : [
+            ['createdAt','ASC']
+        ]
+    }).catch(err => console.log("Error in fetchAllBook",err))
     return res.status(200).send(data)
 }
 
