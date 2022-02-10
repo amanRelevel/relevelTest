@@ -42,7 +42,10 @@ module.exports.signUp = (req,res) => {
             const hash = bcrypt.hashSync(req.body.password,10);
             userModel.create({ 
                 user:req.body.username,
-                password:hash
+                password:hash,
+                isAdmin : false,
+                noOfRentedBook : 0
+
             }).catch(err => console.log("Error in signup controller",err))
 
             return res.send({

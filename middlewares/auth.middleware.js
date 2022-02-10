@@ -12,7 +12,7 @@ module.exports.auth = (req,res,next) => {
                     msg : "Invalid Token"
                 })
             }
-            req.user = user;
+            req.user.id = user;
             next();
         })
     }

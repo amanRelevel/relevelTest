@@ -1,5 +1,8 @@
 const bookModel = require('../services/db.services').Book
 const Sequelize = require('sequelize')
+const userModel = require('../services/db.services').User
+const rentedBookModel = require('../services/db.services').RentedBook
+
 module.exports.fetchAllBook = async (req,res) => {
     let data = await bookModel.findAll().catch(err => console.log("Error in fetchAllBook",err))
     return res.status(200).send(data)
@@ -24,6 +27,16 @@ module.exports.bookDelete = async (req,res) => {
         }).catch(err => console.log("Error in bookDelete",err))
     }
     else if(req.query.rent == true){
+        let userData = await userModel.findOne({
+            where:{
+                id:req.user.id
+            }
+        })
+        if(userData.noOfRentedBook == 2){
+            return res.send({
+                msg : "Cannot Rent More Than 2 Book"
+            })
+        }
         await bookModel.findAll({
             where : {
                 IsbnNo : req.body.IsbnNo,
@@ -36,6 +49,18 @@ module.exports.bookDelete = async (req,res) => {
                         IsbnNo: req.body.IsbnNo
                     }
                 }).catch(err => console.log("Error in bookRentUpdate",err))
+
+                await userModel.update({noOfRentedBook : userData.noOfRentedBook + 1},{
+                    where : {
+                        userId : userData.id
+                    }
+                }).catch(err => console.log("Error in Updating no of rented Book",err))
+
+                await rentedBookModel.create({
+                    userId : req.user.id,
+                    IsbnNo : req.body.IsbnNo
+                }).catch(err => console.log("Error in Adding rentedBook",err))
+
                 res.send({
                     msg : "Book is rented"
                 })
@@ -58,6 +83,24 @@ module.exports.bookDelete = async (req,res) => {
                         IsbnNo: req.body.IsbnNo
                     }
                 }).catch(err => console.log("Error in bookRentUpdate",err))
+                let userData = await userModel.findOne({
+                    where : {
+                        id : req.user.id
+                    }
+                }).catch(err => console.log("Error in Fetching user data",err))
+                await userModel.update({noOfRentedBook : userData.noOfRentedBook-1},{
+                    where : {
+                        userId : userData.id
+                    }
+                }).catch(err => console.log("Error in Updating no of rented Book",err))
+
+                await rentedBookModel.delete({
+                    where:{
+                        userId : req.user.id,
+                        IsbnNo : req.body.IsbnNo
+                    }
+                }).catch(err => console.log("Error in removing rentedBook",err))
+
                 res.send({
                     msg : "Book is returned"
                 })
@@ -70,5 +113,15 @@ module.exports.bookDelete = async (req,res) => {
 }
 
 module.exports.rentedBookByUser = async (req,res) => {
-    let query = `select * from rentedBook left join Books on Books.IsbnNo = rentedBook.IsbnNo where rentedBook.userid = {$}`
+    let query = `select * from rentedBook left join Books on Books.IsbnNo = rentedBook.IsbnNo where rentedBook.useriId = $userId;`;
+
+   let data =  await sequelize.query(
+        query,
+        {
+        bind: { userId: req.params.userId },
+        type: QueryTypes.SELECT
+        }
+    ).catch(err => console.log("Err in rentedBookByUser",err))
+
+    return res.send(data)
 }

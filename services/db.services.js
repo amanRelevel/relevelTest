@@ -13,6 +13,6 @@ db.sequelize = sequelize
 
 db.User = require('../models/user.model')(sequelize,Sequelize);
 db.Book = require('../models/book.model')(sequelize,Sequelize);
-
+db.RentedBook = require('../models/rentedBook.model')(sequelize,Sequelize);
 module.exports = db;
 
