@@ -70,5 +70,5 @@ module.exports.bookDelete = async (req,res) => {
 }
 
 module.exports.rentedBookByUser = async (req,res) => {
-    let query = `select `
+    let query = `select * from rentedBook left join Books on Books.IsbnNo = rentedBook.IsbnNo where rentedBook.userid = {$}`
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+const bookroute = require('./routes/Book.routes')
 const bodyParser = require('body-parser');
 const db = require('./services/db.services')
 const authRoute = require('./routes/auth.routes')
@@ -10,6 +10,8 @@ app.use(bodyParser.urlencoded({extended : true}));
 db.sequelize.sync();
 // db.sequelize.sync({force : true});
 // 
+
+app.use('/',bookroute);
 
 app.get('/',(req,res) =>{   
     return res.send({
