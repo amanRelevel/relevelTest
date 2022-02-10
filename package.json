@@ -1,5 +1,5 @@
 {
-  "name": "urban-spoon",
+  "name": "Book Rental",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deadlyaman/urban-spoon.git"
+    "url": ""
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/deadlyaman/urban-spoon/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/deadlyaman/urban-spoon#readme",
+  "homepage": "",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.1",
