@@ -9,7 +9,11 @@ module.exports.fetchAllBook = async (req,res) => {
 }
 
 module.exports.addBook = async (req,res) => {
-
+    if(!req.user.isAdmin){
+        return res.send({
+            msg : "Not Authorized"
+        })
+    }
     await bookModel.create(req.body).catch(err => console.log("Error in addBook",err))
 
     return res.status(200).send({
@@ -18,7 +22,11 @@ module.exports.addBook = async (req,res) => {
 }
 
 module.exports.bookDelete = async (req,res) => {
-
+    if(!req.user.isAdmin){
+        return res.send({
+            msg : "Not Authorized"
+        })
+    }
     if(req.query.delete == true){
         await bookModel.delete({
             where : {
